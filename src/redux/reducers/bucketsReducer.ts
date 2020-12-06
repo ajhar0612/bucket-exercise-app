@@ -1,35 +1,38 @@
 import { createSlice, PayloadAction, CaseReducer } from "@reduxjs/toolkit";
 
+export const BUCKET_KEYS = ["bucket1", "bucket2", "bucket3"];
+
 type StateType = {
   currentItem: string;
-  currentBucketId: Bucket | null;
-  bucket1: Array<string>;
-  bucket2: Array<string>;
-  bucket3: Array<string>;
+  currentBucketId: string;
+  buckets: { [key: string]: Array<string> };
 };
-
-export type Bucket = "bucket1" | "bucket2" | "bucket3";
 
 const initialState: StateType = {
   currentItem: "",
-  currentBucketId: null,
-  bucket1: [],
-  bucket2: [],
-  bucket3: [],
+  currentBucketId: "",
+  buckets: BUCKET_KEYS.reduce(
+    (val: { [key: string]: Array<string> }, key: string) => {
+      val[key] = [];
+      return val;
+    },
+    {}
+  ),
 };
 
 const addItem: CaseReducer<
   StateType,
   PayloadAction<{
     item: string;
-    bucketId: Bucket;
+    bucketId: string;
   }>
 > = (state, action) => {
   const { item, bucketId } = action.payload;
-  const bucket = state[bucketId];
+  const bucket = state.buckets[bucketId];
   if (!bucket.includes(item)) {
     bucket.push(item);
     state.currentItem = "";
+    state.currentBucketId = "";
   } else {
     state.currentItem = item;
     state.currentBucketId = bucketId;
@@ -39,7 +42,7 @@ const addItem: CaseReducer<
 };
 
 const bucketsSlice = createSlice({
-  name: "buckets",
+  name: "bucketSlice",
   initialState,
   reducers: {
     addItem,

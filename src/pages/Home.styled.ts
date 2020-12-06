@@ -9,6 +9,7 @@ export const Topbar = styled.div`
 export const BucketContainer = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 `;
 
 export const Input = styled.input`
